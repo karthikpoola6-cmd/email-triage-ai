@@ -1,0 +1,47 @@
+[
+  {
+    "id": "test-001",
+    "from": "john.smith@company.com",
+    "sender_name": "John Smith",
+    "subject": "VPN not connecting from home office",
+    "body": "Hi IT Support,\n\nI've been unable to connect to the company VPN since this morning. I've tried restarting my laptop and router but still getting a 'connection timed out' error. I need access to the internal systems for a client meeting at 2pm today.\n\nPlease help ASAP.\n\nThanks,\nJohn",
+    "timestamp": "2026-02-11T09:15:00Z",
+    "expected_category": "connectivity"
+  },
+  {
+    "id": "test-002",
+    "from": "hr@company.com",
+    "sender_name": "HR Department",
+    "subject": "New hire starting Monday - Sarah Johnson",
+    "body": "Hello IT Team,\n\nWe have a new employee starting next Monday:\n\nName: Sarah Johnson\nDepartment: Marketing\nRole: Marketing Analyst\nStart Date: February 17, 2026\n\nShe will need:\n- Laptop setup\n- Email account\n- Access to Salesforce and HubSpot\n- Badge access to Building B\n\nPlease have everything ready by Friday.\n\nThank you,\nHR",
+    "timestamp": "2026-02-11T08:30:00Z",
+    "expected_category": "onboarding"
+  },
+  {
+    "id": "test-003",
+    "from": "lisa.chen@company.com",
+    "sender_name": "Lisa Chen",
+    "subject": "Need to reset my password",
+    "body": "Hi,\n\nI forgot my password and I'm locked out of my account. Can someone please reset it?\n\nMy username is lchen@company.com\n\nThank you,\nLisa",
+    "timestamp": "2026-02-11T10:45:00Z",
+    "expected_category": "transactional"
+  },
+  {
+    "id": "test-004",
+    "from": "mike.davis@company.com",
+    "sender_name": "Mike Davis",
+    "subject": "Question about IT policies",
+    "body": "Hey team,\n\nI had a couple questions:\n\n1. What's the policy on using personal devices for work email?\n2. Are we allowed to install third-party software on company laptops?\n3. Who do I talk to about getting a second monitor?\n\nThanks,\nMike",
+    "timestamp": "2026-02-11T11:20:00Z",
+    "expected_category": "general"
+  },
+  {
+    "id": "test-005",
+    "from": "anna.wu@company.com",
+    "sender_name": "Anna Wu",
+    "subject": "Wi-Fi keeps dropping in conference room 3B",
+    "body": "Hi IT,\n\nThe Wi-Fi in conference room 3B on the second floor has been extremely unreliable this week. It drops every 10-15 minutes during meetings. Multiple people have reported this issue.\n\nThis is affecting our ability to do video calls with clients. Can someone look into it?\n\nThanks,\nAnna",
+    "timestamp": "2026-02-11T13:00:00Z",
+    "expected_category": "connectivity"
+  }
+]

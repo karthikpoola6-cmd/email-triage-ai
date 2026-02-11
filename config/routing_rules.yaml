@@ -1,0 +1,24 @@
+categories:
+  connectivity:
+    description: "Network, VPN, internet, Wi-Fi, firewall issues"
+    priority: 2
+    assignment_group: "Network Support"
+    sla_hours: 4
+
+  onboarding:
+    description: "New hire setup, account creation, access requests, equipment"
+    priority: 3
+    assignment_group: "IT Onboarding"
+    sla_hours: 24
+
+  transactional:
+    description: "Password resets, software installs, license requests, routine changes"
+    priority: 3
+    assignment_group: "Service Desk"
+    sla_hours: 8
+
+  general:
+    description: "Uncategorized or multi-topic inquiries"
+    priority: 4
+    assignment_group: "General IT Support"
+    sla_hours: 24
