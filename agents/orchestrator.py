@@ -25,27 +25,27 @@ class PipelineState(TypedDict):
 
 
 def classify_node(state: PipelineState) -> dict:
-    print(f"  [1/5] Classifying email...")
+    print(f"  [1/6] Classifying email...")
     classification = classify_email(state["email"])
     print(f"        → {classification['category']} ({classification['confidence']:.0%})")
     return {"classification": classification}
 
 
 def route_node(state: PipelineState) -> dict:
-    print(f"  [2/5] Routing...")
+    print(f"  [2/6] Routing...")
     routing = route_email(state["classification"])
     print(f"        → {routing['assignment_group']} (P{routing['priority']})")
     return {"routing": routing}
 
 
 def ticket_node(state: PipelineState) -> dict:
-    print(f"  [3/5] Creating ServiceNow ticket...")
+    print(f"  [3/6] Creating ServiceNow ticket...")
     ticket_id = create_ticket(state["email"], state["classification"], state["routing"])
     return {"ticket_id": ticket_id}
 
 
 def ack_node(state: PipelineState) -> dict:
-    print(f"  [4/5] Generating acknowledgement...")
+    print(f"  [4/6] Generating acknowledgement...")
     ack = generate_ack(state["email"], state["classification"], state["routing"], state["ticket_id"])
     print(f"        → Reply to: {ack['to']}")
     return {"acknowledgement": ack}
@@ -79,8 +79,7 @@ def send_ack_node(state: PipelineState) -> dict:
 
 
 def log_node(state: PipelineState) -> dict:
-    step = "6/6" if state.get("live_mode") else "5/5"
-    print(f"  [{step}] Logging to audit database...")
+    print(f"  [6/6] Logging to audit database...")
     log_event(state["email"], state["classification"], state["routing"], state["ticket_id"])
     print(f"        → Logged.")
     return {}

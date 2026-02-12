@@ -5,7 +5,6 @@ Uses MSAL device code flow for authentication.
 """
 
 import os
-import json
 import re
 import atexit
 
