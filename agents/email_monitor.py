@@ -118,14 +118,37 @@ def _strip_html(html: str) -> str:
 
 SKIP_SENDERS = {
     "noreply", "no-reply", "postmaster", "mailer-daemon",
-    "account-security-noreply", "notifications",
+    "account-security-noreply", "notifications", "member_services",
+}
+
+SKIP_DOMAINS = {
+    "accountprotection.microsoft.com",
 }
 
 
-def _is_system_email(address: str) -> bool:
-    """Check if an email is from a no-reply / system address we should skip."""
-    local = address.split("@")[0].lower()
-    return local in SKIP_SENDERS
+def _should_skip(address: str, subject: str) -> bool:
+    """Check if an email should be skipped (system mail, auto-replies, newsletters)."""
+    address = address.lower()
+    local = address.split("@")[0]
+    domain = address.split("@")[-1]
+
+    # Skip known no-reply senders
+    if local in SKIP_SENDERS:
+        return True
+
+    # Skip known system domains
+    if domain in SKIP_DOMAINS:
+        return True
+
+    # Skip our own auto-replies
+    if "[Ticket:" in subject:
+        return True
+
+    # Skip bounce-backs
+    if subject.lower().startswith("undeliverable:"):
+        return True
+
+    return False
 
 
 def fetch_unread_emails(token: str, max_count: int = 10) -> list[dict]:
@@ -159,8 +182,9 @@ def fetch_unread_emails(token: str, max_count: int = 10) -> list[dict]:
             body_text = body_content
 
         address = sender.get("address", "unknown@unknown.com")
+        subject = msg.get("subject", "")
 
-        if _is_system_email(address):
+        if _should_skip(address, subject):
             continue
 
         emails.append({
