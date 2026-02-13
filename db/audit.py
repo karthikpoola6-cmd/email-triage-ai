@@ -32,9 +32,15 @@ def init_db():
             priority INTEGER,
             ticket_id TEXT,
             status TEXT DEFAULT 'processed',
-            created_at TEXT
+            created_at TEXT,
+            resolution_notified BOOLEAN DEFAULT 0
         )
     """)
+    # Add resolution_notified column to existing databases
+    try:
+        conn.execute("ALTER TABLE audit_log ADD COLUMN resolution_notified BOOLEAN DEFAULT 0")
+    except sqlite3.OperationalError:
+        pass  # Column already exists
     conn.commit()
     conn.close()
 
@@ -62,6 +68,27 @@ def log_event(email: dict, classification: dict, routing: dict, ticket_id: str =
             ticket_id,
             datetime.now(timezone.utc).isoformat(),
         ),
+    )
+    conn.commit()
+    conn.close()
+
+
+def get_unnotified_tickets():
+    """Get audit log entries with tickets that haven't been resolution-notified yet."""
+    conn = get_connection()
+    rows = conn.execute(
+        "SELECT * FROM audit_log WHERE ticket_id IS NOT NULL AND resolution_notified = 0"
+    ).fetchall()
+    conn.close()
+    return [dict(row) for row in rows]
+
+
+def mark_resolution_notified(ticket_id: str):
+    """Mark a ticket as resolution-notified in the audit log."""
+    conn = get_connection()
+    conn.execute(
+        "UPDATE audit_log SET resolution_notified = 1 WHERE ticket_id = ?",
+        (ticket_id,),
     )
     conn.commit()
     conn.close()

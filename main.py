@@ -62,6 +62,7 @@ def run_sample_mode():
 def run_live_mode():
     """Authenticate with Microsoft Graph and poll for unread emails."""
     from agents.email_monitor import authenticate, get_user_info, fetch_unread_emails
+    from agents.resolution_checker import check_resolved_tickets
 
     print("Authenticating with Microsoft Graph...")
     token = authenticate()
@@ -97,6 +98,9 @@ def run_live_mode():
                     print()
 
                 print_summary()
+
+            # Check for resolved tickets and send notifications
+            check_resolved_tickets(token)
 
             time.sleep(POLL_INTERVAL)
 
