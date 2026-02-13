@@ -11,6 +11,7 @@ An automated system that monitors a shared mailbox, classifies incoming IT suppo
 5. A ServiceNow incident is created automatically with all the relevant details
 6. An acknowledgement email is sent back to the sender with their ticket number and expected response time
 7. The original email is marked as read and the entire transaction is logged to an audit database
+8. Each poll cycle, the system checks ServiceNow for any tickets that have been resolved and automatically sends a resolution notification email back to the original sender
 
 If the AI is unsure about a classification (confidence below 70%), the system bumps the priority so a human can review it faster rather than risking a wrong assignment.
 
@@ -32,25 +33,33 @@ Incoming Email
   Email Sender (Microsoft Graph API)
       |
   Audit Logger (SQLite)
+
+--- runs each poll cycle ---
+
+  Resolution Checker (ServiceNow API)
+      |
+  Resolution Notifier (Microsoft Graph API)
 ```
 
-Each agent is a standalone module that does one thing. The orchestrator connects them into a state machine where each step passes its output to the next.
+Each agent is a standalone module that does one thing. The orchestrator connects them into a state machine where each step passes its output to the next. The resolution checker runs alongside the main pipeline each poll cycle, querying ServiceNow for resolved tickets and notifying the original sender.
 
 ## Project Structure
 
 ```
 agents/
-    classifier.py        AI classification using Claude
-    router.py            Rule based routing with priority escalation
-    ticket_creator.py    ServiceNow incident creation
-    acknowledger.py      HTML acknowledgement email generation
-    email_monitor.py     Microsoft Graph API integration
-    orchestrator.py      LangGraph pipeline that chains all agents
+    classifier.py           AI classification using Claude
+    router.py               Rule based routing with priority escalation
+    ticket_creator.py       ServiceNow incident creation
+    acknowledger.py         HTML acknowledgement email generation
+    email_monitor.py        Microsoft Graph API integration
+    resolution_checker.py   Polls ServiceNow for resolved tickets and sends notifications
+    orchestrator.py         LangGraph pipeline that chains all agents
 
 config/
     routing_rules.yaml   Category to team mapping with SLA definitions
     templates/
-        ack_template.html    Jinja2 template for reply emails
+        ack_template.html        Jinja2 template for acknowledgement emails
+        resolution_template.html Jinja2 template for resolution notification emails
 
 db/
     audit.py             SQLite audit trail for all processed emails
@@ -155,4 +164,11 @@ The system polls for new unread emails every 30 seconds. Press Ctrl+C to stop.
         → Marked original email as read
   [6/6] Logging to audit database...
         → Logged.
+```
+
+When a ticket is resolved in ServiceNow, the next poll cycle picks it up:
+
+```
+  Checking 1 ticket(s) for resolution...
+        → Resolution notification sent for INC0010018 to user@company.com
 ```
